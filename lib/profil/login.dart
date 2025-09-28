@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trashbin/Opening/splash.dart';
+import 'package:trashbin/Main/dashboard.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -75,13 +75,16 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () async {
                       if (_nameController.text.isNotEmpty) {
                         final prefs = await SharedPreferences.getInstance();
-                        await prefs.setString('userName', _nameController.text.trim());
+                        await prefs.setString(
+                          'userName',
+                          _nameController.text.trim(),
+                        );
 
                         // Lanjut ke SplashScreen
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SplashScreen(),
+                            builder: (context) => const DashboardPage(),
                           ),
                         );
                       }
@@ -106,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

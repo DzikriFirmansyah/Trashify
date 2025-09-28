@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:trashbin/Opening/tutorial.dart';
+import 'package:trashbin/Opening/tutorialScreen.dart';
 
 class LoadingPage extends StatelessWidget {
   const LoadingPage({super.key});
@@ -13,7 +13,7 @@ class LoadingPage extends StatelessWidget {
       Future.delayed(const Duration(seconds: 4), () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const TutorialPage()),
+          MaterialPageRoute(builder: (context) => const TutorialScreen()),
         );
       });
     });
@@ -26,11 +26,11 @@ class LoadingPage extends StatelessWidget {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CircularProgressIndicator(color: Colors.green,),
-              )
+              child: CircularProgressIndicator(color: Colors.green),
+            ),
           ],
         ),
-      )
+      ),
     );
   }
 }

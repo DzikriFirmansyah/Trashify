@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:trashbin/Opening/splash.dart';
-import 'package:trashbin/Opening/tutorial.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,4 +18,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

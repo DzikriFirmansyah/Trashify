@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TutorialPage extends StatelessWidget {
+class Tutorial3Page extends StatelessWidget {
   final PageController controller;
   final int pageIndex;
   final int totalPages;
 
-  const TutorialPage({
+  const Tutorial3Page({
     super.key,
     required this.controller,
     required this.pageIndex,
@@ -43,37 +43,6 @@ class TutorialPage extends StatelessWidget {
                           fit: BoxFit.contain,
                         ),
                       ),
-
-                      // Tombol Skip kanan atas
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.lightGreen,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          elevation: 2,
-                        ),
-                        onPressed: () {
-                          // Loncat ke halaman terakhir
-                          controller.animateToPage(
-                            totalPages - 1,
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.easeInOut,
-                          );
-                        },
-                        child: const Text(
-                          "SKIP",
-                          style: TextStyle(
-                            color: Colors.lightGreen,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -82,7 +51,7 @@ class TutorialPage extends StatelessWidget {
 
                 // Gambar di tengah
                 Image.asset(
-                  'assets/images/content1.png',
+                  'assets/images/content3.png',
                   height: 300,
                   width: 300,
                 ),
@@ -93,7 +62,7 @@ class TutorialPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Text(
-                    "Sampah menumpuk jadi sarang penyakit. Buang segera demi kesehatan.",
+                    "Sampah lembap menimbulkan bau dan serangga. Buang rutin agar lingkungan nyaman.",
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       color: Colors.black87,
@@ -146,7 +115,7 @@ class TutorialPage extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
+                            backgroundColor: Colors.lightGreen,
                             foregroundColor: Colors.lightGreen,
                             padding: const EdgeInsets.symmetric(vertical: 18),
                             shape: RoundedRectangleBorder(
@@ -165,9 +134,11 @@ class TutorialPage extends StatelessWidget {
                             }
                           },
                           child: Text(
-                            pageIndex == totalPages - 1 ? "FINISH" : "NEXT",
+                            pageIndex == totalPages - 1
+                                ? "GET STARTED"
+                                : "NEXT",
                             style: const TextStyle(
-                              color: Colors.lightGreen,
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TutorialPage extends StatelessWidget {
+class Tutorial2Page extends StatelessWidget {
   final PageController controller;
   final int pageIndex;
   final int totalPages;
 
-  const TutorialPage({
+  const Tutorial2Page({
     super.key,
     required this.controller,
     required this.pageIndex,
@@ -59,12 +59,7 @@ class TutorialPage extends StatelessWidget {
                           elevation: 2,
                         ),
                         onPressed: () {
-                          // Loncat ke halaman terakhir
-                          controller.animateToPage(
-                            totalPages - 1,
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.easeInOut,
-                          );
+                          Navigator.pushReplacementNamed(context, '/home');
                         },
                         child: const Text(
                           "SKIP",
@@ -82,7 +77,7 @@ class TutorialPage extends StatelessWidget {
 
                 // Gambar di tengah
                 Image.asset(
-                  'assets/images/content1.png',
+                  'assets/images/content2.png',
                   height: 300,
                   width: 300,
                 ),
@@ -93,7 +88,7 @@ class TutorialPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Text(
-                    "Sampah menumpuk jadi sarang penyakit. Buang segera demi kesehatan.",
+                    "Sampah mudah terbakar berisiko kebakaran. Pisahkan dan buang dengan benar.",
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       color: Colors.black87,

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:trashbin/Main/scan.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class ScanPage extends StatelessWidget {
+  const ScanPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +13,11 @@ class DashboardPage extends StatelessWidget {
         backgroundColor: Colors.white, // hijau tua
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black, size: 28),
+          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
           onPressed: () {},
         ),
         title: Text(
-          "Dashboard",
+          "Scan",
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -28,7 +27,7 @@ class DashboardPage extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.person, color: Colors.black, size: 28),
+            icon: const Icon(Icons.book, color: Colors.black, size: 28),
             onPressed: () {},
           ),
         ],
@@ -94,7 +93,7 @@ class DashboardPage extends StatelessWidget {
                     "Trash Bin",
                     style: GoogleFonts.poppins(
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,  
+                      fontWeight: FontWeight.bold,
                       color: Colors.grey[800], // hijau lebih pekat
                     ),
                   ),
@@ -113,17 +112,9 @@ class DashboardPage extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ScanPage()),
-                          );
-                        },
-                        child: Image.asset(
-                          "assets/images/iot-image.jpg",
-                          fit: BoxFit.cover,
-                        ),
+                      child: Image.asset(
+                        "assets/images/iot-image.jpg",
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

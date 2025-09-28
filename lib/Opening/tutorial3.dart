@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:trashbin/Main/dashboard.dart';
 import 'package:trashbin/Opening/splash.dart';
 import 'package:trashbin/profil/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -140,7 +141,7 @@ class Tutorial3Page extends StatelessWidget {
 
                               if (savedName != null && savedName.isNotEmpty) {
                                 // kalau sudah ada → langsung ke SplashScreen
-                                nextPage = const SplashScreen();
+                                nextPage = const DashboardPage();
                               } else {
                                 // kalau belum ada → ke LoginPage
                                 nextPage = const LoginPage();

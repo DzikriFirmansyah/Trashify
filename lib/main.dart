@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Trashify',
       theme: ThemeData(primaryColor: Colors.green),
-      home: const TutorialScreen(),
+      home: const SplashScreen(),
     );
   }
 }

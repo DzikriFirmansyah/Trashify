@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trashbin/Opening/splash.dart';
 
 class LoginPage extends StatefulWidget {
@@ -9,11 +8,15 @@ class LoginPage extends StatefulWidget {
 
   @override
   State<LoginPage> createState() => _LoginPageState();
-  
 }
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _nameController = TextEditingController();
+
+  Future<void> _saveUser(String name) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', name);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,25 +29,23 @@ class _LoginPageState extends State<LoginPage> {
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
-              ),
+            ),
             Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 200, bottom: 10),
-                    child: Icon(Icons.person, size: 150, color: Colors.green,),
+                  const SizedBox(height: 200),
+                  const Icon(Icons.person, size: 150, color: Colors.green),
+                  const SizedBox(height: 10),
+                  Text(
+                    'SELAMAT DATANG',
+                    style: GoogleFonts.righteous(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
                     ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 20),
-                    child:
-                      Text('SELAMAT DATANG', style: GoogleFonts.righteous(
-                        color: Colors.black,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold
-                        ),
-                      ),
-                    ),
+                  ),
+                  const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: TextField(
@@ -69,36 +70,46 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: ElevatedButton(
-                      onPressed: () {
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (_nameController.text.isNotEmpty) {
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setString('userName', _nameController.text.trim());
+
+                        // Lanjut ke SplashScreen
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => const SplashScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const SplashScreen(),
+                          ),
                         );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 120),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 18,
+                        horizontal: 120,
                       ),
-                      child: const Text(
-                        'MASUK',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'MASUK',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ],
-              )
+              ),
             )
           ],
-        ))
+        ),
+      ),
     );
   }
 }

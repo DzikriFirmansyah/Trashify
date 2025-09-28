@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:trashbin/Opening/splash.dart';
 import 'package:trashbin/profil/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Tutorial3Page extends StatelessWidget {
   final PageController controller;
@@ -123,18 +125,31 @@ class Tutorial3Page extends StatelessWidget {
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             if (pageIndex < totalPages - 1) {
                               controller.nextPage(
                                 duration: const Duration(milliseconds: 300),
                                 curve: Curves.easeInOut,
                               );
                             } else {
-                              // kalau sudah di halaman terakhir → masuk ke LoginPage
+                              // cek apakah sudah ada data nama user di SharedPreferences
+                              final prefs = await SharedPreferences.getInstance();
+                              final savedName = prefs.getString('userName');
+
+                              Widget nextPage;
+
+                              if (savedName != null && savedName.isNotEmpty) {
+                                // kalau sudah ada → langsung ke SplashScreen
+                                nextPage = const SplashScreen();
+                              } else {
+                                // kalau belum ada → ke LoginPage
+                                nextPage = const LoginPage();
+                              }
+
                               Navigator.pushReplacement(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
+                                  pageBuilder: (context, animation, secondaryAnimation) => nextPage,
                                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                     const begin = Offset(1.0, 0.0); // mulai dari kanan
                                     const end = Offset.zero;

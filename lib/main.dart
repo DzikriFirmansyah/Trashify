@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trashbin/Opening/splash.dart';
 import 'package:trashbin/Opening/tutorial.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Trashify',
       theme: ThemeData(primaryColor: Colors.green),
-      home: const TutorialPage(),
+      home: const SplashScreen(),
     );
   }
 }

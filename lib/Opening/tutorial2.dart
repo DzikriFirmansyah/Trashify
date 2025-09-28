@@ -48,7 +48,7 @@ class Tutorial2Page extends StatelessWidget {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          foregroundColor: Colors.lightGreen,
+                          foregroundColor: Colors.green,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 8,
@@ -59,12 +59,17 @@ class Tutorial2Page extends StatelessWidget {
                           elevation: 2,
                         ),
                         onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/home');
+                          // Loncat ke halaman terakhir
+                          controller.animateToPage(
+                            totalPages - 1,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
                         },
                         child: const Text(
                           "SKIP",
                           style: TextStyle(
-                            color: Colors.lightGreen,
+                            color: Colors.green,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -111,7 +116,7 @@ class Tutorial2Page extends StatelessWidget {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              foregroundColor: Colors.lightGreen,
+                              foregroundColor: Colors.green,
                               padding: const EdgeInsets.symmetric(vertical: 18),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
@@ -126,7 +131,7 @@ class Tutorial2Page extends StatelessWidget {
                             child: const Text(
                               "PREVIOUS",
                               style: TextStyle(
-                                color: Colors.lightGreen,
+                                color: Colors.green,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -142,7 +147,7 @@ class Tutorial2Page extends StatelessWidget {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
-                            foregroundColor: Colors.lightGreen,
+                            foregroundColor: Colors.green,
                             padding: const EdgeInsets.symmetric(vertical: 18),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
@@ -162,7 +167,7 @@ class Tutorial2Page extends StatelessWidget {
                           child: Text(
                             pageIndex == totalPages - 1 ? "FINISH" : "NEXT",
                             style: const TextStyle(
-                              color: Colors.lightGreen,
+                              color: Colors.green,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

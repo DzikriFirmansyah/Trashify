@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:trashbin/profil/login.dart';
 
 class Tutorial3Page extends StatelessWidget {
   final PageController controller;
@@ -85,7 +86,7 @@ class Tutorial3Page extends StatelessWidget {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              foregroundColor: Colors.lightGreen,
+                              foregroundColor: Colors.green,
                               padding: const EdgeInsets.symmetric(vertical: 18),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
@@ -100,7 +101,7 @@ class Tutorial3Page extends StatelessWidget {
                             child: const Text(
                               "PREVIOUS",
                               style: TextStyle(
-                                color: Colors.lightGreen,
+                                color: Colors.green,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -115,8 +116,8 @@ class Tutorial3Page extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightGreen,
-                            foregroundColor: Colors.lightGreen,
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.green,
                             padding: const EdgeInsets.symmetric(vertical: 18),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
@@ -129,8 +130,26 @@ class Tutorial3Page extends StatelessWidget {
                                 curve: Curves.easeInOut,
                               );
                             } else {
-                              // kalau halaman terakhir → masuk home
-                              Navigator.pushReplacementNamed(context, '/home');
+                              // kalau sudah di halaman terakhir → masuk ke LoginPage
+                              Navigator.pushReplacement(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
+                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                    const begin = Offset(1.0, 0.0); // mulai dari kanan
+                                    const end = Offset.zero;
+                                    const curve = Curves.easeInOut;
+
+                                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                    var offsetAnimation = animation.drive(tween);
+
+                                    return SlideTransition(
+                                      position: offsetAnimation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
                             }
                           },
                           child: Text(

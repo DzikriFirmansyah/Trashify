@@ -1,20 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:trashbin/Main/scan.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trashbin/profil/login.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  String? _userName;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('userName') ?? "User"; // default kalau kosong
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // abu-abu sangat muda
-      // ✅ Navbar hijau
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white, // hijau tua
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black, size: 28),
+          icon: const Icon(Icons.book, color: Colors.black, size: 28),
           onPressed: () {},
         ),
         title: Text(
@@ -22,7 +42,7 @@ class DashboardPage extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.black, // teks putih agar kontras
+            color: Colors.black,
           ),
         ),
         centerTitle: true,
@@ -34,36 +54,24 @@ class DashboardPage extends StatelessWidget {
         ],
       ),
 
+      // ✅ Ganti Column → ListView biar bisa discroll
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
           children: [
             // Sapaan user
             Container(
               width: double.infinity,
-              margin: const EdgeInsets.only(
-                top: 20,
-                left: 16, // jarak kiri
-                right: 16, // jarak kanan
-              ),
-              padding: const EdgeInsets.only(
-                top: 20,
-                left: 20,
-                right: 20,
-                bottom: 40,
-              ),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.green,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(30),
-                  bottom: Radius.circular(30),
-                ),
+                borderRadius: BorderRadius.circular(30),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "HELLO,\nXXXXXXXX",
+                    "HELLO,\n${_userName ?? '...'}",
                     style: GoogleFonts.poppins(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
@@ -82,56 +90,139 @@ class DashboardPage extends StatelessWidget {
                 ],
               ),
             ),
+
             const SizedBox(height: 20),
 
             // Section Trash Bin
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Trash Bin",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,  
-                      color: Colors.grey[800], // hijau lebih pekat
-                    ),
-                  ),
-                  Divider(
-                    thickness: 1,
-                    color: Colors.grey[800], // divider hijau muda
-                  ),
-
-                  // Box gambar IoT
-                  Container(
-                    height: 180,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.green[100], // background hijau muda
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ScanPage()),
-                          );
-                        },
-                        child: Image.asset(
-                          "assets/images/iot-image.jpg",
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+            Text(
+              "Trash Bin",
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
               ),
+            ),
+            Divider(thickness: 1, color: Colors.grey[800]),
+
+            // Card 1
+            _buildTrashCard(
+              context,
+              title: "TRASH BIN 01",
+              status: "ON",
+              statusColor: Colors.green,
+              bgColor: Colors.green[50],
+            ),
+
+            // Card 2
+            _buildTrashCard(
+              context,
+              title: "TRASH BIN 02",
+              status: "OFF",
+              statusColor: Colors.grey,
+              bgColor: Colors.grey[200],
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // Fungsi pembuat card supaya tidak duplikat kode
+  Widget _buildTrashCard(
+    BuildContext context, {
+    required String title,
+    required String status,
+    required Color statusColor,
+    required Color? bgColor,
+  }) {
+    return Card(
+      color: bgColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 4,
+      margin: const EdgeInsets.only(top: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Gambar
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              },
+              child: Image.asset(
+                "assets/images/iot-image.jpg",
+                height: 160,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+
+          // Isi Card
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Monitor • Gas • Humidity",
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.circle, color: statusColor, size: 18),
+                        const SizedBox(width: 4),
+                        Text(
+                          status,
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

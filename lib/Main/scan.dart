@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:trashbin/Main/dashboard.dart';
+import 'package:trashbin/Main/statistic.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
@@ -48,7 +49,7 @@ class _ScanPageState extends State<ScanPage> {
       ),
 
       body: SafeArea(
-        child:ListView(
+        child: ListView(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,11 +57,7 @@ class _ScanPageState extends State<ScanPage> {
                 // Bagian hijau atas
                 Container(
                   width: double.infinity,
-                  margin: const EdgeInsets.only(
-                    top: 20,
-                    left: 16,
-                    right: 16,
-                  ),
+                  margin: const EdgeInsets.only(top: 20, left: 16, right: 16),
                   padding: const EdgeInsets.only(
                     top: 20,
                     left: 20,
@@ -114,7 +111,9 @@ class _ScanPageState extends State<ScanPage> {
                             AnimatedAlign(
                               duration: const Duration(milliseconds: 250),
                               curve: Curves.easeInOut,
-                              alignment: isOn ? Alignment.centerLeft : Alignment.centerRight,
+                              alignment: isOn
+                                  ? Alignment.centerLeft
+                                  : Alignment.centerRight,
                               child: Container(
                                 width: (320 - 4) / 2, // separo dari toggle
                                 decoration: BoxDecoration(
@@ -141,7 +140,9 @@ class _ScanPageState extends State<ScanPage> {
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
-                                          color: isOn ? Colors.black : Colors.black54,
+                                          color: isOn
+                                              ? Colors.black
+                                              : Colors.black54,
                                         ),
                                       ),
                                     ),
@@ -160,7 +161,9 @@ class _ScanPageState extends State<ScanPage> {
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
-                                          color: !isOn ? Colors.black : Colors.black54,
+                                          color: !isOn
+                                              ? Colors.black
+                                              : Colors.black54,
                                         ),
                                       ),
                                     ),
@@ -191,16 +194,15 @@ class _ScanPageState extends State<ScanPage> {
                           color: Colors.grey[800],
                         ),
                       ),
-                      Divider(
-                        thickness: 1,
-                        color: Colors.grey[800],
-                      ),
+                      Divider(thickness: 1, color: Colors.grey[800]),
 
                       // Card 1
                       _buildTrashCard(
                         context,
                         title: DateFormat('EEEE').format(DateTime.now()),
-                        subtitle: DateFormat('dd-MM-yyyy').format(DateTime.now()), // realtime timestamp,
+                        subtitle: DateFormat(
+                          'dd-MM-yyyy',
+                        ).format(DateTime.now()), // realtime timestamp,
                         status: DateFormat('HH:mm').format(DateTime.now()),
                       ),
 
@@ -219,7 +221,7 @@ class _ScanPageState extends State<ScanPage> {
               ],
             ),
           ],
-        ) 
+        ),
       ),
     );
   }
@@ -247,78 +249,78 @@ class _ScanPageState extends State<ScanPage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const DashboardPage()),
-                );  
+                  MaterialPageRoute(
+                    builder: (context) => const StatisticPage(),
+                  ),
+                );
               },
-              child:
-              Padding(
+              child: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child:
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            subtitle,
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Monitor • Gas • Humidity",
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Monitor • Gas • Humidity",
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            color: Colors.grey[600],
                           ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    status,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 10,
-                                      color: Colors.grey[700],
-                                    ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const SizedBox(width: 4),
+                                Text(
+                                  status,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 10,
+                                    color: Colors.grey[700],
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                     Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.black,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(6.0),
-                            child: Icon(
-                              Icons.history,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ),
+                      decoration: const BoxDecoration(
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Icon(
+                          Icons.history,
+                          color: Colors.white,
+                          size: 18,
                         ),
+                      ),
+                    ),
                   ],
-                )
+                ),
               ),
             ),
           ),

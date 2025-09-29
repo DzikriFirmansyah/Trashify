@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trashbin/profil/login.dart';
+import 'package:trashbin/main/profile.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -26,6 +27,21 @@ class _DashboardPageState extends State<DashboardPage> {
     });
   }
 
+  Future<void> _goToProfilePage() async {
+    // ✅ Menunggu hasil dari ProfilePage
+    final updatedName = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ProfilePage()),
+    );
+
+    // ✅ Kalau ada username baru, langsung update
+    if (updatedName != null && updatedName is String) {
+      setState(() {
+        _userName = updatedName;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +51,12 @@ class _DashboardPageState extends State<DashboardPage> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.book, color: Colors.black, size: 28),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
+          },
         ),
         title: Text(
           "Dashboard",
@@ -49,12 +70,11 @@ class _DashboardPageState extends State<DashboardPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.person, color: Colors.black, size: 28),
-            onPressed: () {},
+            onPressed: _goToProfilePage, // ✅ sudah menunggu hasil pop
           ),
         ],
       ),
 
-      // ✅ Ganti Column → ListView biar bisa discroll
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trashbin/Main/scan.dart';
-import 'package:trashbin/edukasi/edukasigas.dart';
+import 'package:trashbin/Main/edukasi.dart';
 import 'package:trashbin/profil/login.dart';
 import 'package:trashbin/main/profile.dart';
 
@@ -56,7 +56,7 @@ class _DashboardPageState extends State<DashboardPage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const EdukasiGas()),
+              MaterialPageRoute(builder: (context) => const EdukasiPage()),
             );
           },
         ),

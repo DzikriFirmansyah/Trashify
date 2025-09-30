@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:trashbin/Main/dashboard.dart';
+import 'package:trashbin/Main/edukasi.dart';
 import 'package:trashbin/Main/statistic.dart';
 
 class ScanPage extends StatefulWidget {
@@ -28,7 +29,10 @@ class _ScanPageState extends State<ScanPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
           onPressed: () {
-            Navigator.pop(context); // balik ke halaman sebelumnya
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const DashboardPage()),
+            );
           },
         ),
         title: Text(
@@ -43,7 +47,12 @@ class _ScanPageState extends State<ScanPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.book, color: Colors.black, size: 28),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EdukasiPage()),
+            );
+            },
           ),
         ],
       ),

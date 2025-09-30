@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:trashbin/Main/dashboard.dart';
+import 'package:trashbin/main/profile.dart';
 
 class EdukasiPage extends StatefulWidget {
   const EdukasiPage({super.key});
@@ -209,8 +210,12 @@ class _EdukasiPageState extends State<EdukasiPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.book, color: Colors.black, size: 26),
-            onPressed: () {},
+            icon: const Icon(Icons.person, color: Colors.black, size: 28),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );},
           ),
         ],
       ),

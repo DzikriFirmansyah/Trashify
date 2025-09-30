@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:trashbin/Main/edukasi.dart';
 import 'package:trashbin/Main/scan.dart';
 
 class StatisticPage extends StatelessWidget {
@@ -43,7 +44,7 @@ class StatisticPage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ScanPage()),
+                MaterialPageRoute(builder: (context) => const EdukasiPage()),
               );
             },
           ),

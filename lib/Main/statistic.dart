@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:trashbin/Main/edukasi.dart';
 import 'package:trashbin/Main/scan.dart';
 
@@ -10,13 +10,22 @@ class StatisticPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ✅ Nilai contoh (bisa nanti diganti dari sensor/API)
-    final double humidity = 40;
-    final double volume = 35;
-    final double gas = 25;
+    final double volume = 60; // %
+    final double humidity = 40; // %
+    final double gas = 2500; // ppm
+    final double gasPercent = double.parse(
+      ((gas / 15000) * 100).toStringAsFixed(1),
+    );
+
+    // ✅ Data Chart dengan warna sesuai _getColor
+    final List<_ChartData> chartData = [
+      _ChartData('Gas', gasPercent, _getColor(gasPercent)),
+      _ChartData('Humidity', humidity, _getColor(humidity)),
+      _ChartData('Volume', volume, _getColor(volume)),
+    ];
 
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -57,98 +66,64 @@ class StatisticPage extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
 
-            // ✅ Bulatan dengan Pie Chart
+            // ✅ Radial Bar Chart
             Container(
-              width: 200,
-              height: 200,
+              width: 250,
+              height: 250,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 8,
-                    spreadRadius: 2,
+              ),
+              child: SfCircularChart(
+                series: <CircularSeries>[
+                  RadialBarSeries<_ChartData, String>(
+                    dataSource: chartData,
+                    xValueMapper: (_ChartData data, _) => data.label,
+                    yValueMapper: (_ChartData data, _) => data.value,
+                    pointColorMapper: (_ChartData data, _) => data.color,
+                    radius: '100%',
+                    innerRadius: '30%',
+                    dataLabelSettings: DataLabelSettings(
+                      isVisible: true,
+                      textStyle: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: PieChart(
-                  PieChartData(
-                    sectionsSpace: 2,
-                    centerSpaceRadius: 0, // full circle
-                    sections: [
-                      PieChartSectionData(
-                        value: humidity,
-                        color: Colors.blue,
-                        title: "Humidity",
-                        radius: 90,
-                        titleStyle: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      PieChartSectionData(
-                        value: volume,
-                        color: Colors.green,
-                        title: "Volume",
-                        radius: 90,
-                        titleStyle: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      PieChartSectionData(
-                        value: gas,
-                        color: Colors.red,
-                        title: "Gas",
-                        radius: 90,
-                        titleStyle: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ),
 
             const SizedBox(height: 40),
 
-            // ✅ Tombol Status
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[300],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 60,
-                  vertical: 14,
-                ),
+            // ✅ Status
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: Text(
-                "Status",
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+              child: Center(
+                child: Text(
+                  "Status",
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 15),
 
-            // ✅ Detail Card Statistik dengan value
-            _buildStatCard("Humidity", humidity, Colors.blue),
-            _buildStatCard("Volume", volume, Colors.green),
-            _buildStatCard("Gas", gas, Colors.red),
+            // ✅ Detail Card Statistik
+            _buildStatCard("Volume", volume, 100), // %
+            _buildStatCard("Kelembapan", humidity, 100), // %
+            _buildStatCard("Gas", gas, 15000), // ppm
           ],
         ),
       ),
@@ -156,9 +131,14 @@ class StatisticPage extends StatelessWidget {
   }
 
   // Card Statistik
-  Widget _buildStatCard(String title, double value, Color color) {
+  Widget _buildStatCard(String title, double value, double maxValue) {
+    // ✅ hitung persentase
+    double percent = (value / maxValue) * 100;
+    percent = percent.clamp(0, 100); // pastikan aman
+
     return Card(
       elevation: 3,
+      color: Colors.grey[100],
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
@@ -166,6 +146,7 @@ class StatisticPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Judul sensor
             Text(
               title,
               style: GoogleFonts.poppins(
@@ -173,24 +154,41 @@ class StatisticPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
 
-            // ✅ Value ditampilkan di dalam card
+            // Progress Bar
             Container(
-              height: 100,
+              height: 20,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Center(
-                child: Text(
-                  "${value.toStringAsFixed(1)}%",
-                  style: GoogleFonts.poppins(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: color,
+              child: Stack(
+                children: [
+                  // Bagian terisi
+                  FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: percent / 100,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: _getColor(percent),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
-                ),
+
+                  // Persentase di tengah
+                  Center(
+                    child: Text(
+                      "${percent.toStringAsFixed(1)}%",
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -198,4 +196,27 @@ class StatisticPage extends StatelessWidget {
       ),
     );
   }
+
+  // Fungsi warna dinamis
+  static Color _getColor(double percent) {
+    if (percent <= 20) {
+      return Colors.lightBlueAccent;
+    } else if (percent <= 40) {
+      return Colors.blue;
+    } else if (percent <= 60) {
+      return Colors.green;
+    } else if (percent <= 80) {
+      return Colors.orange;
+    } else {
+      return Colors.red;
+    }
+  }
+}
+
+// ✅ Data model untuk chart
+class _ChartData {
+  final String label;
+  final double value;
+  final Color color;
+  _ChartData(this.label, this.value, this.color);
 }

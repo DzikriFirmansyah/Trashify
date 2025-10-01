@@ -38,6 +38,13 @@ dependencies:
   shared_preferences: ^2.5.3
   intl: ^0.20.2
   fl_chart: ^0.69.0
+  flutter_launcher_icons: ^0.14.4
+
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/Logo.png"
 
 dev_dependencies:
   flutter_test:
@@ -69,7 +76,7 @@ flutter:
   - assets/images/content2.png
   - assets/images/content3.png
   - assets/images/iot-image.jpg
-  - assets/images/logo.png
+  - assets/images/Logo.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

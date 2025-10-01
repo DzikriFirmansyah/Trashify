@@ -288,7 +288,7 @@ class _ScanPageState extends State<ScanPage> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "Monitor • Gas • Humidity",
+                          "Volume • Gas • Humidity",
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             color: Colors.grey[600],

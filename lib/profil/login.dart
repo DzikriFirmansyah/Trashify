@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 200),
+                  const SizedBox(height: 80),
                   const Icon(Icons.person, size: 150, color: Colors.green),
                   const SizedBox(height: 10),
                   Text(

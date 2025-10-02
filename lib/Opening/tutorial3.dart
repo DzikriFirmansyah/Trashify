@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:trashbin/Main/dashboard.dart';
-import 'package:trashbin/Opening/splash.dart';
 import 'package:trashbin/profil/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -134,7 +133,8 @@ class Tutorial3Page extends StatelessWidget {
                               );
                             } else {
                               // cek apakah sudah ada data nama user di SharedPreferences
-                              final prefs = await SharedPreferences.getInstance();
+                              final prefs =
+                                  await SharedPreferences.getInstance();
                               final savedName = prefs.getString('userName');
 
                               Widget nextPage;
@@ -150,20 +150,39 @@ class Tutorial3Page extends StatelessWidget {
                               Navigator.pushReplacement(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) => nextPage,
-                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                    const begin = Offset(1.0, 0.0); // mulai dari kanan
-                                    const end = Offset.zero;
-                                    const curve = Curves.easeInOut;
+                                  pageBuilder:
+                                      (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                      ) => nextPage,
+                                  transitionsBuilder:
+                                      (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                        child,
+                                      ) {
+                                        const begin = Offset(
+                                          1.0,
+                                          0.0,
+                                        ); // mulai dari kanan
+                                        const end = Offset.zero;
+                                        const curve = Curves.easeInOut;
 
-                                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                                    var offsetAnimation = animation.drive(tween);
+                                        var tween = Tween(
+                                          begin: begin,
+                                          end: end,
+                                        ).chain(CurveTween(curve: curve));
+                                        var offsetAnimation = animation.drive(
+                                          tween,
+                                        );
 
-                                    return SlideTransition(
-                                      position: offsetAnimation,
-                                      child: child,
-                                    );
-                                  },
+                                        return SlideTransition(
+                                          position: offsetAnimation,
+                                          child: child,
+                                        );
+                                      },
                                 ),
                               );
                             }

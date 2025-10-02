@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trashbin/Opening/tutorial.dart';
 import 'package:trashbin/Opening/splash.dart';
-import 'package:trashbin/Opening/tutorial2.dart';
-import 'package:trashbin/Opening/tutorialScreen.dart';
-import 'package:trashbin/profil/login.dart';
 
 void main() {
   runApp(const MyApp());

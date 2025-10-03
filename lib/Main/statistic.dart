@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:trashbin/Main/edukasi.dart';
+import 'package:trashbin/Main/dashboard.dart';
 import 'package:trashbin/Main/scan.dart';
 
 class StatisticPage extends StatelessWidget {

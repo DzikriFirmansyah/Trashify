@@ -75,7 +75,7 @@ class StatisticPage extends StatelessWidget {
                 color: Colors.white,
               ),
               child: SfCircularChart(
-                series: <CircularSeries>[
+                series: <RadialBarSeries<_ChartData, String>>[
                   RadialBarSeries<_ChartData, String>(
                     dataSource: chartData,
                     xValueMapper: (_ChartData data, _) => data.label,

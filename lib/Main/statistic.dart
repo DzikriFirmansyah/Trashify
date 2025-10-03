@@ -191,6 +191,24 @@ class StatisticPage extends StatelessWidget {
                 ],
               ),
             ),
+          const SizedBox(height: 10),
+          Container(
+            height: 25,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                    child: Text(
+                        _getvalue(percent),
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+          )
           ],
         ),
       ),
@@ -209,6 +227,21 @@ class StatisticPage extends StatelessWidget {
       return Colors.orange;
     } else {
       return Colors.red;
+    }
+  }
+  
+    // Fungsi Text dinamis
+  static String _getvalue(double percent) {
+    if (percent <= 20) {
+      return "Sangat Rendah";
+    } else if (percent <= 40) {
+      return "Rendah";
+    } else if (percent <= 60) {
+      return "Stabil";
+    } else if (percent <= 80) {
+      return "Tinggi";
+    } else {
+      return "Sangat Tinggi";
     }
   }
 }

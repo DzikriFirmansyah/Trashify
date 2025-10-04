@@ -16,7 +16,7 @@ class ScanPage extends StatefulWidget {
 class _ScanPageState extends State<ScanPage> {
   // State untuk ToggleButtons
   List<bool> isSelected = [true, false]; // default: On aktif
-  bool isOn = true; // default ON
+  bool isOn = false; // default OFF
 
   @override
   Widget build(BuildContext context) {
@@ -214,16 +214,6 @@ class _ScanPageState extends State<ScanPage> {
                         ).format(DateTime.now()), // realtime timestamp,
                         status: DateFormat('HH:mm').format(DateTime.now()),
                       ),
-
-                      // // Card 2
-                      // _buildTrashCard(
-                      //   context,
-                      //   title: DateFormat('dd-MM-yyyy').format(DateTime.now()), // realtime timestamp,
-                      //   subtitle: DateFormat('HH:mm').format(DateTime.now()), // realtime timestamp,
-                      //   status: "OFF",
-                      //   statusColor: Colors.grey,
-                      //   bgColor: Colors.grey[200],
-                      // ),
                     ],
                   ),
                 ),

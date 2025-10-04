@@ -142,6 +142,8 @@ class _DashboardPageState extends State<DashboardPage> {
               statusColor: Colors.grey,
               bgColor: Colors.grey[200],
             ),
+
+            _buildAddTrashCard(context),
           ],
         ),
       ),
@@ -244,6 +246,46 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Card tombol tambah Trash Bin
+  Widget _buildAddTrashCard(BuildContext context) {
+    return Card(
+      color: Colors.grey[100],
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 2,
+      margin: const EdgeInsets.only(top: 16, bottom: 20),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Tambah Trash Bin diklik")),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 30),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.add_circle_outline,
+                size: 48,
+                color: Colors.green,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Tambah Trash Bin",
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.green[700],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

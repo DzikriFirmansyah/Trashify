@@ -192,24 +192,24 @@ class StatisticPage extends StatelessWidget {
                 ],
               ),
             ),
-          const SizedBox(height: 10),
-          Container(
-            height: 25,
+            const SizedBox(height: 10),
+            Container(
+              height: 25,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
-                    child: Text(
-                        _getvalue(percent),
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
+                child: Text(
+                  _getvalue(percent),
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
-          )
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -230,8 +230,8 @@ class StatisticPage extends StatelessWidget {
       return Colors.red;
     }
   }
-  
-    // Fungsi Text dinamis
+
+  // Fungsi Text dinamis
   static String _getvalue(double percent) {
     if (percent <= 20) {
       return "Sangat Rendah";

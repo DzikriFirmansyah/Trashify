@@ -20,33 +20,33 @@ class _EdukasiPageState extends State<EdukasiPage> {
     [
       {
         "label": "Sangat Rendah",
-        "color": Color(0xFF46DEFF),
+        "color": Colors.lightBlueAccent,
         "desc":
-            "Volume sampah hampir kosong sehingga tidak memerlukan tindakan khusus, cukup teruskan monitoring rutin."
+            "Volume sampah hampir kosong sehingga tidak memerlukan tindakan khusus, cukup teruskan monitoring rutin.",
       },
       {
         "label": "Rendah",
-        "color": Color(0xFF0085FF),
+        "color": Colors.blue,
         "desc":
-            "Tempat sampah mulai terisi sedikit dan masih aman, cukup dipantau secara berkala agar tidak menumpuk."
+            "Tempat sampah mulai terisi sedikit dan masih aman, cukup dipantau secara berkala agar tidak menumpuk.",
       },
       {
         "label": "Stabil",
-        "color": Color(0xFF42FF00),
+        "color": Colors.green,
         "desc":
-            "Kondisi tempat sampah sudah setengah penuh sehingga perlu mulai dijadwalkan pengangkutan sebelum penuh."
+            "Kondisi tempat sampah sudah setengah penuh sehingga perlu mulai dijadwalkan pengangkutan sebelum penuh.",
       },
       {
         "label": "Tinggi",
-        "color": Color(0xFFFF5C00),
+        "color": Colors.orange,
         "desc":
-            "Volume sampah mendekati kapasitas maksimum sehingga harus segera dijadwalkan pengosongan atau pengangkutan."
+            "Volume sampah mendekati kapasitas maksimum sehingga harus segera dijadwalkan pengosongan atau pengangkutan.",
       },
       {
         "label": "Sangat Tinggi",
-        "color": Color(0xFFFF0000),
+        "color": Colors.red,
         "desc":
-            "Tempat sampah sudah penuh dan berisiko meluap, segera lakukan pengangkutan atau pembersihan untuk mencegah pencemaran."
+            "Tempat sampah sudah penuh dan berisiko meluap, segera lakukan pengangkutan atau pembersihan untuk mencegah pencemaran.",
       },
     ],
 
@@ -54,33 +54,33 @@ class _EdukasiPageState extends State<EdukasiPage> {
     [
       {
         "label": "Sangat Kering",
-        "color": Color(0xFF46DEFF),
+        "color": Colors.lightBlueAccent,
         "desc":
-            "Kondisi sampah sangat kering, risiko pembusukan rendah, cukup dipantau."
+            "Kondisi sampah sangat kering, risiko pembusukan rendah, cukup dipantau.",
       },
       {
         "label": "Kering",
-        "color": Color(0xFF0085FF),
+        "color": Colors.blue,
         "desc":
-            "Kelembapan rendah, masih aman dan tidak menimbulkan bau menyengat."
+            "Kelembapan rendah, masih aman dan tidak menimbulkan bau menyengat.",
       },
       {
         "label": "Normal",
-        "color": Color(0xFF42FF00),
+        "color": Colors.green,
         "desc":
-            "Kelembapan stabil, kondisi sampah masih dalam batas wajar dan aman."
+            "Kelembapan stabil, kondisi sampah masih dalam batas wajar dan aman.",
       },
       {
         "label": "Lembap",
-        "color": Color(0xFFFF5C00),
+        "color": Colors.orange,
         "desc":
-            "Kelembapan mulai tinggi, perlu perhatian agar tidak menimbulkan bau dan menarik serangga."
+            "Kelembapan mulai tinggi, perlu perhatian agar tidak menimbulkan bau dan menarik serangga.",
       },
       {
         "label": "Sangat Lembap",
-        "color": Color(0xFFFF0000),
+        "color": Colors.red,
         "desc":
-            "Kondisi sangat lembap, risiko pembusukan dan bau tinggi, segera lakukan pengelolaan."
+            "Kondisi sangat lembap, risiko pembusukan dan bau tinggi, segera lakukan pengelolaan.",
       },
     ],
 
@@ -88,39 +88,39 @@ class _EdukasiPageState extends State<EdukasiPage> {
     [
       {
         "label": "Sangat Rendah",
-        "color": Color(0xFF46DEFF),
-        "desc":
-            "Kadar gas sangat rendah, kondisi aman dan tidak berbahaya."
+        "color": Colors.lightBlueAccent,
+        "desc": "Kadar gas sangat rendah, kondisi aman dan tidak berbahaya.",
       },
       {
         "label": "Rendah",
-        "color": Color(0xFF0085FF),
+        "color": Colors.blue,
         "desc":
-            "Gas mulai terdeteksi, namun masih dalam batas aman untuk lingkungan."
+            "Gas mulai terdeteksi, namun masih dalam batas aman untuk lingkungan.",
       },
       {
         "label": "Stabil",
-        "color": Color(0xFF42FF00),
+        "color": Colors.green,
         "desc":
-            "Kadar gas normal, tidak menimbulkan risiko berarti bagi lingkungan."
+            "Kadar gas normal, tidak menimbulkan risiko berarti bagi lingkungan.",
       },
       {
         "label": "Tinggi",
-        "color": Color(0xFFFF5C00),
+        "color": Colors.orange,
         "desc":
-            "Gas mendekati ambang batas, perlu segera dipantau agar tidak membahayakan."
+            "Gas mendekati ambang batas, perlu segera dipantau agar tidak membahayakan.",
       },
       {
         "label": "Sangat Tinggi",
-        "color": Color(0xFFFF0000),
+        "color": Colors.red,
         "desc":
-            "Gas berbahaya, segera lakukan pengelolaan untuk mencegah pencemaran udara."
+            "Gas berbahaya, segera lakukan pengelolaan untuk mencegah pencemaran udara.",
       },
     ],
   ];
 
   Widget buildLevelCard(String label, Color color, String desc) {
     return Card(
+      color: Colors.grey[200],
       margin: const EdgeInsets.symmetric(vertical: 10),
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -130,8 +130,7 @@ class _EdukasiPageState extends State<EdukasiPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               decoration: BoxDecoration(
                 color: color,
                 borderRadius: BorderRadius.circular(30),
@@ -148,10 +147,7 @@ class _EdukasiPageState extends State<EdukasiPage> {
             const SizedBox(height: 10),
             Text(
               desc,
-              style: GoogleFonts.poppins(
-                fontSize: 12,
-                color: Colors.black87,
-              ),
+              style: GoogleFonts.poppins(fontSize: 12, color: Colors.black87),
             ),
           ],
         ),
@@ -163,9 +159,11 @@ class _EdukasiPageState extends State<EdukasiPage> {
     final isActive = _currentIndex == index;
     return GestureDetector(
       onTap: () {
-        _pageController.animateToPage(index,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut);
+        _pageController.animateToPage(
+          index,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -215,7 +213,8 @@ class _EdukasiPageState extends State<EdukasiPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ProfilePage()),
-              );},
+              );
+            },
           ),
         ],
       ),
@@ -246,11 +245,13 @@ class _EdukasiPageState extends State<EdukasiPage> {
                 return ListView(
                   padding: const EdgeInsets.all(16),
                   children: list
-                      .map((item) => buildLevelCard(
-                            item["label"],
-                            item["color"],
-                            item["desc"],
-                          ))
+                      .map(
+                        (item) => buildLevelCard(
+                          item["label"],
+                          item["color"],
+                          item["desc"],
+                        ),
+                      )
                       .toList(),
                 );
               },

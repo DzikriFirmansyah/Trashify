@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trashbin/Main/dashboard.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:uuid/uuid.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,9 +16,24 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _nameController = TextEditingController();
 
-  Future<void> _saveUser(String name) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userName', name);
+  Future<String> _getDeviceId() async {
+    final deviceInfo = DeviceInfoPlugin();
+
+    try {
+      if (Theme.of(context).platform == TargetPlatform.android) {
+        final androidInfo = await deviceInfo.androidInfo;
+        return androidInfo.id ?? const Uuid().v4(); // fallback UUID
+      } else if (Theme.of(context).platform == TargetPlatform.iOS) {
+        final iosInfo = await deviceInfo.iosInfo;
+        return iosInfo.identifierForVendor ?? const Uuid().v4();
+      } else {
+        // untuk web atau platform lain
+        return const Uuid().v4();
+      }
+    } catch (e) {
+      debugPrint('Gagal ambil deviceId: $e');
+      return const Uuid().v4(); // fallback aman
+    }
   }
 
   @override
@@ -73,14 +91,24 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
-                      if (_nameController.text.isNotEmpty) {
-                        final prefs = await SharedPreferences.getInstance();
-                        await prefs.setString(
-                          'userName',
-                          _nameController.text.trim(),
-                        );
+                      final name = _nameController.text.trim();
+                      if (name.isNotEmpty) {
+                        final deviceId =
+                            await _getDeviceId(); // ✅ ganti pakai fungsi aman
 
-                        // Lanjut ke SplashScreen
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setString('userName', name);
+                        await prefs.setString('deviceId', deviceId);
+
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(deviceId)
+                            .set({
+                              'userName': name,
+                              'deviceId': deviceId,
+                              'createdAt': FieldValue.serverTimestamp(),
+                            }, SetOptions(merge: true));
+
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

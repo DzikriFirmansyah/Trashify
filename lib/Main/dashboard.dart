@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trashbin/Main/scan.dart';
 import 'package:trashbin/Main/edukasi.dart';
 import 'package:trashbin/main/profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -14,32 +15,72 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   String? _userName;
+  String? _deviceId;
 
   @override
   void initState() {
     super.initState();
-    _loadUserName();
+    _loadUserData();
   }
 
-  Future<void> _loadUserName() async {
+  /// 🔹 Ambil data username & deviceId dari SharedPreferences
+  Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString('userName') ?? "User";
+    final deviceId = prefs.getString('deviceId') ?? "Unknown Device";
+
     setState(() {
-      _userName = prefs.getString('userName') ?? "User"; // default kalau kosong
+      _userName = name;
+      _deviceId = deviceId;
     });
+
+    // 🔹 (Opsional) Sinkronisasi ulang data Firestore jika offline sebelumnya
+    await _syncUserToFirestore(name, deviceId);
   }
 
+  /// 🔹 Simpan ulang data user ke Firestore (jika belum ada)
+  Future<void> _syncUserToFirestore(String name, String deviceId) async {
+    final userDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(deviceId);
+    final docSnapshot = await userDoc.get();
+
+    if (!docSnapshot.exists) {
+      await userDoc.set({
+        'userName': name,
+        'deviceId': deviceId,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    } else {
+      // Update nama jika berubah
+      final data = docSnapshot.data();
+      if (data?['userName'] != name) {
+        await userDoc.update({'userName': name});
+      }
+    }
+  }
+
+  /// 🔹 Navigasi ke halaman profile dan update username bila berubah
   Future<void> _goToProfilePage() async {
-    // ✅ Menunggu hasil dari ProfilePage
     final updatedName = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const ProfilePage()),
     );
 
-    // ✅ Kalau ada username baru, langsung update
     if (updatedName != null && updatedName is String) {
       setState(() {
         _userName = updatedName;
       });
+
+      // Update juga ke SharedPreferences dan Firestore
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userName', updatedName);
+      if (_deviceId != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(_deviceId)
+            .update({'userName': updatedName});
+      }
     }
   }
 
@@ -71,7 +112,7 @@ class _DashboardPageState extends State<DashboardPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.person, color: Colors.black, size: 28),
-            onPressed: _goToProfilePage, // ✅ sudah menunggu hasil pop
+            onPressed: _goToProfilePage,
           ),
         ],
       ),
@@ -80,7 +121,7 @@ class _DashboardPageState extends State<DashboardPage> {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
           children: [
-            // Sapaan user
+            // ✅ Sapaan user
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -100,6 +141,15 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  Text(
+                    "📱 Device ID: ${_deviceId ?? '-'}",
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.white70,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
                   Text(
                     "Have you checked your trash today?",
                     style: GoogleFonts.poppins(
@@ -125,7 +175,6 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             Divider(thickness: 1, color: Colors.grey[800]),
 
-            // Card 1
             _buildTrashCard(
               context,
               title: "TRASH BIN 01",
@@ -133,8 +182,6 @@ class _DashboardPageState extends State<DashboardPage> {
               statusColor: Colors.green,
               bgColor: Colors.green[50],
             ),
-
-            // Card 2
             _buildTrashCard(
               context,
               title: "TRASH BIN 02",
@@ -142,7 +189,6 @@ class _DashboardPageState extends State<DashboardPage> {
               statusColor: Colors.grey,
               bgColor: Colors.grey[200],
             ),
-
             _buildAddTrashCard(context),
           ],
         ),
@@ -150,7 +196,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // Fungsi pembuat card supaya tidak duplikat kode
+  // 🔹 Card untuk Trash Bin
   Widget _buildTrashCard(
     BuildContext context, {
     required String title,
@@ -166,7 +212,6 @@ class _DashboardPageState extends State<DashboardPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Gambar
           ClipRRect(
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(16),
@@ -187,8 +232,6 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ),
           ),
-
-          // Isi Card
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Column(
@@ -250,7 +293,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // Card tombol tambah Trash Bin
+  // 🔹 Card tambah Trash Bin
   Widget _buildAddTrashCard(BuildContext context) {
     return Card(
       color: Colors.grey[100],

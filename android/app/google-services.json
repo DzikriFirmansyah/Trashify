@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1040793169187",
+    "project_id": "trashify-db",
+    "storage_bucket": "trashify-db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040793169187:android:a85353cd9b5c89614db096",
+        "android_client_info": {
+          "package_name": "com.example.trashbin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIavpnYx7LDkIh1ZkWM5FoRntPSFz6TI0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

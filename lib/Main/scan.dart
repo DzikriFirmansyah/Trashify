@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:trashbin/Main/dashboard.dart';
@@ -14,26 +14,76 @@ class ScanPage extends StatefulWidget {
 }
 
 class _ScanPageState extends State<ScanPage> {
-  // State untuk ToggleButtons
-  List<bool> isSelected = [true, false]; // default: On aktif
-  bool isOn = false; // default OFF
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref();
+  bool isOn = false;
+  List<Map<String, dynamic>> sensorHistory = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _listenRealtime();
+  }
+
+  void _listenRealtime() {
+    // 🔹 Baca status isActive
+    _dbRef.child('Control/device_001/isActive').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        setState(() => isOn = data == true);
+      }
+    });
+
+    // 🔹 Baca data sensor (maksimal 10 data terbaru)
+    _dbRef.child('Sensors/device_001').onValue.listen((event) {
+      final data = event.snapshot.value as Map?;
+      if (data != null) {
+        final list = data.entries
+            .where((e) => e.value is Map) // hanya ambil data yang valid
+            .map((e) {
+              final val = e.value as Map;
+              return {
+                "id": e.key,
+                "gas": val["gas"],
+                "jarak": val["jarak"],
+                "kelembapan": val["kelembapan"],
+                "timestamp": val["timestamp"],
+              };
+            })
+            .toList();
+
+        // 🔹 Urutkan berdasarkan timestamp (terbaru dulu)
+        list.sort((a, b) {
+          final tA = DateTime.parse(a["timestamp"]).toLocal();
+          final tB = DateTime.parse(b["timestamp"]).toLocal();
+          return tB.compareTo(tA); // terbaru dulu
+        });
+
+        // 🔹 Ambil hanya 10 data terbaru
+        final latest10 = list.take(10).toList();
+
+        setState(() => sensorHistory = latest10);
+      }
+    });
+  }
+
+  void _toggleSwitch(bool value) {
+    setState(() => isOn = value);
+    _dbRef.child('Control/device_001/isActive').set(value);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // ✅ Navbar
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const DashboardPage()),
-            );
-          },
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const DashboardPage()),
+          ),
         ),
         title: Text(
           "Scan",
@@ -46,284 +96,227 @@ class _ScanPageState extends State<ScanPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.book, color: Colors.black, size: 28),
-            onPressed: () {
-              Navigator.push(
+            icon: const Icon(Icons.book, color: Colors.black),
+            onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const EdukasiPage()),
-            );
-            },
+              MaterialPageRoute(builder: (_) => const EdukasiPage()),
+            ),
           ),
         ],
       ),
-
       body: SafeArea(
         child: ListView(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Bagian hijau atas
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.only(top: 20, left: 16, right: 16),
-                  padding: const EdgeInsets.only(
-                    top: 20,
-                    left: 20,
-                    right: 20,
-                    bottom: 20,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Gambar kecil
-                      Container(
-                        height: 100,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.green[100],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.asset(
-                            "assets/images/iot-image.jpg",
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        "Trash Bin Ready!",
-                        style: GoogleFonts.poppins(
-                          fontSize: 24,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      // ✅ Toggle On/Off
-                      Container(
-                        width: double.infinity, // ikuti lebar gambar nanti
-                        height: 30,
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Stack(
-                          children: [
-                            // Background geser
-                            AnimatedAlign(
-                              duration: const Duration(milliseconds: 250),
-                              curve: Curves.easeInOut,
-                              alignment: isOn
-                                  ? Alignment.centerLeft
-                                  : Alignment.centerRight,
-                              child: Container(
-                                width: (320 - 4) / 2, // separo dari toggle
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                              ),
-                            ),
-
-                            // Tulisan On/Off
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        isOn = true;
-                                      });
-                                    },
-                                    child: Center(
-                                      child: Text(
-                                        "On",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: isOn
-                                              ? Colors.black
-                                              : Colors.black54,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        isOn = false;
-                                      });
-                                    },
-                                    child: Center(
-                                      child: Text(
-                                        "Off",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: !isOn
-                                              ? Colors.black
-                                              : Colors.black54,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // Section Trash Bin
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "History",
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[800],
-                        ),
-                      ),
-                      Divider(thickness: 1, color: Colors.grey[800]),
-
-                      // Card 1
-                      _buildTrashCard(
-                        context,
-                        title: DateFormat('EEEE').format(DateTime.now()),
-                        subtitle: DateFormat(
-                          'dd-MM-yyyy',
-                        ).format(DateTime.now()), // realtime timestamp,
-                        status: DateFormat('HH:mm').format(DateTime.now()),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            _buildControlCard(),
+            const SizedBox(height: 20),
+            _buildHistorySection(),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildControlCard() {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 20, left: 16, right: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.green,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Gambar IoT
+          Container(
+            height: 100,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.green[100],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                "assets/images/iot-image.jpg",
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Judul
+          Text(
+            "Trash Bin Ready!",
+            style: GoogleFonts.poppins(fontSize: 24, color: Colors.white),
+          ),
+          const SizedBox(height: 10),
+
+          // Label & Custom Toggle
+          Container(
+            width: double.infinity,
+            height: 35,
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final halfWidth = constraints.maxWidth / 2;
+
+                return Stack(
+                  children: [
+                    // Background geser
+                    AnimatedAlign(
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeInOut,
+                      alignment: isOn
+                          ? Alignment.centerLeft
+                          : Alignment.centerRight,
+                      child: Container(
+                        width: halfWidth,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+
+                    // Tulisan On / Off
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isOn = true;
+                                _toggleSwitch(true);
+                              });
+                            },
+                            child: Center(
+                              child: Text(
+                                "On",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: isOn ? Colors.black : Colors.black54,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isOn = false;
+                                _toggleSwitch(false);
+                              });
+                            },
+                            child: Center(
+                              child: Text(
+                                "Off",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: !isOn ? Colors.black : Colors.black54,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHistorySection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "History",
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Divider(thickness: 1, color: Colors.grey[800]),
+          if (sensorHistory.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "No data yet",
+                  style: GoogleFonts.poppins(color: Colors.grey),
+                ),
+              ),
+            )
+          else
+            ...sensorHistory.map((data) {
+              final time = DateTime.parse(data["timestamp"]).toLocal();
+              final dateformatted = DateFormat("dd-MM-yyyy").format(time);
+              final timeFormatted = DateFormat("HH:mm:ss").format(time);
+
+              return _buildTrashCard(
+                context,
+                data: data,
+                title: dateformatted,
+                subtitle:
+                    "Gas: ${data['gas']} \nVolume: ${data['jarak']}% \nHumidity: ${data['kelembapan']}%",
+                status: timeFormatted,
+              );
+            }).toList(),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTrashCard(
     BuildContext context, {
+    required Map<String, dynamic> data,
     required String title,
     required String subtitle,
     required String status,
   }) {
     return Card(
+      color: Colors.grey[50],
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 4,
+      elevation: 3,
       margin: const EdgeInsets.only(top: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Gambar
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
-            ),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const StatisticPage(),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          subtitle,
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "Volume • Gas • Humidity",
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                const SizedBox(width: 4),
-                                Text(
-                                  status,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 10,
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.black,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(6.0),
-                        child: Icon(
-                          Icons.history,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => StatisticPage(
+                volume: double.tryParse(data['jarak']?.toString() ?? '0') ?? 0,
+                humidity:
+                    double.tryParse(data['kelembapan']?.toString() ?? '0') ?? 0,
+                gas: double.tryParse(data['gas']?.toString() ?? '0') ?? 0,
               ),
             ),
-          ),
-        ],
+          );
+        },
+        leading: const Icon(Icons.history, color: Colors.green),
+        title: Text(title, style: GoogleFonts.poppins(fontSize: 14)),
+        subtitle: Text(subtitle, style: GoogleFonts.poppins(fontSize: 12)),
+        trailing: Text(
+          status,
+          style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey[700]),
+        ),
       ),
     );
   }

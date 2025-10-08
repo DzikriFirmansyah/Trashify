@@ -15,6 +15,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _nameController = TextEditingController();
+  bool _isLoading = false; // 🔹 indikator loading
 
   Future<String> _getDeviceId() async {
     final deviceInfo = DeviceInfoPlugin();
@@ -33,6 +34,41 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       debugPrint('Gagal ambil deviceId: $e');
       return const Uuid().v4(); // fallback aman
+    }
+  }
+
+  Future<void> _login() async {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) return;
+
+    setState(() => _isLoading = true); // 🔹 mulai loading
+
+    try {
+      final deviceId = await _getDeviceId();
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userName', name);
+      await prefs.setString('deviceId', deviceId);
+
+      await FirebaseFirestore.instance.collection('users').doc(deviceId).set({
+        'userName': name,
+        'deviceId': deviceId,
+        'createdAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardPage()),
+        );
+      }
+    } catch (e) {
+      debugPrint('⚠️ Gagal login: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Terjadi kesalahan saat login')),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false); // 🔹 hentikan loading
     }
   }
 
@@ -90,33 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () async {
-                      final name = _nameController.text.trim();
-                      if (name.isNotEmpty) {
-                        final deviceId =
-                            await _getDeviceId(); // ✅ ganti pakai fungsi aman
-
-                        final prefs = await SharedPreferences.getInstance();
-                        await prefs.setString('userName', name);
-                        await prefs.setString('deviceId', deviceId);
-
-                        await FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(deviceId)
-                            .set({
-                              'userName': name,
-                              'deviceId': deviceId,
-                              'createdAt': FieldValue.serverTimestamp(),
-                            }, SetOptions(merge: true));
-
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DashboardPage(),
-                          ),
-                        );
-                      }
-                    },
+                    onPressed: _isLoading ? null : _login,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       padding: const EdgeInsets.symmetric(
@@ -127,13 +137,22 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      'MASUK',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            'MASUK',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ],
               ),

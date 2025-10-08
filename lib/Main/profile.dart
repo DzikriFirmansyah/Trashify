@@ -14,6 +14,7 @@ class _EditProfilePageState extends State<ProfilePage> {
   final TextEditingController _nameController = TextEditingController();
   String? _deviceId;
   bool _isLoading = true;
+  bool _isSaving = false; // 🔹 Tambahkan flag loading untuk tombol simpan
 
   @override
   void initState() {
@@ -60,6 +61,8 @@ class _EditProfilePageState extends State<ProfilePage> {
     final newName = _nameController.text.trim();
     if (newName.isEmpty) return;
 
+    setState(() => _isSaving = true); // 🔹 Aktifkan loading sebelum simpan
+
     try {
       // 🔹 Update ke Firestore
       await FirebaseFirestore.instance
@@ -82,6 +85,8 @@ class _EditProfilePageState extends State<ProfilePage> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Gagal memperbarui profil')));
+    } finally {
+      if (mounted) setState(() => _isSaving = false); // 🔹 Nonaktifkan loading
     }
   }
 
@@ -103,7 +108,7 @@ class _EditProfilePageState extends State<ProfilePage> {
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: Colors.green))
           : SafeArea(
               child: Stack(
                 children: [
@@ -157,7 +162,7 @@ class _EditProfilePageState extends State<ProfilePage> {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: _saveUserName,
+                              onPressed: _isSaving ? null : _saveUserName,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
                                 padding: const EdgeInsets.symmetric(
@@ -167,14 +172,23 @@ class _EditProfilePageState extends State<ProfilePage> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: Text(
-                                "Simpan",
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
+                              child: _isSaving
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.green,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : Text(
+                                      "Simpan",
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
                             ),
                           ),
                         ],

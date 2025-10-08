@@ -48,6 +48,8 @@ class DefaultFirebaseOptions {
     authDomain: 'trashify-db.firebaseapp.com',
     storageBucket: 'trashify-db.firebasestorage.app',
     measurementId: 'G-2E7VTMVNYN',
+    databaseURL:
+        'https://trashify-db-default-rtdb.asia-southeast1.firebasedatabase.app/',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -56,6 +58,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1040793169187',
     projectId: 'trashify-db',
     storageBucket: 'trashify-db.firebasestorage.app',
+    databaseURL:
+        'https://trashify-db-default-rtdb.asia-southeast1.firebasedatabase.app/',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(

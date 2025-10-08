@@ -2,23 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:trashbin/Main/edukasi.dart';
-import 'package:trashbin/Main/dashboard.dart';
-import 'package:trashbin/Main/scan.dart';
 
 class StatisticPage extends StatelessWidget {
-  const StatisticPage({super.key});
+  final double volume;
+  final double humidity;
+  final double gas;
+
+  const StatisticPage({
+    super.key,
+    required this.volume,
+    required this.humidity,
+    required this.gas,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // ✅ Nilai contoh (bisa nanti diganti dari sensor/API)
-    final double volume = 60; // %
-    final double humidity = 40; // %
-    final double gas = 2500; // ppm
     final double gasPercent = double.parse(
       ((gas / 15000) * 100).toStringAsFixed(1),
     );
 
-    // ✅ Data Chart dengan warna sesuai _getColor
     final List<_ChartData> chartData = [
       _ChartData('Gas', gasPercent, _getColor(gasPercent)),
       _ChartData('Humidity', humidity, _getColor(humidity)),
@@ -32,12 +34,7 @@ class StatisticPage extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ScanPage()),
-            );
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           "Statistic",
@@ -122,20 +119,18 @@ class StatisticPage extends StatelessWidget {
             const SizedBox(height: 15),
 
             // ✅ Detail Card Statistik
-            _buildStatCard("Volume", volume, 100), // %
-            _buildStatCard("Kelembapan", humidity, 100), // %
-            _buildStatCard("Gas", gas, 15000), // ppm
+            _buildStatCard("Volume", volume, 100),
+            _buildStatCard("Kelembapan", humidity, 100),
+            _buildStatCard("Gas", gas, 15000),
           ],
         ),
       ),
     );
   }
 
-  // Card Statistik
   Widget _buildStatCard(String title, double value, double maxValue) {
-    // ✅ hitung persentase
     double percent = (value / maxValue) * 100;
-    percent = percent.clamp(0, 100); // pastikan aman
+    percent = percent.clamp(0, 100);
 
     return Card(
       elevation: 3,
@@ -147,7 +142,6 @@ class StatisticPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Judul sensor
             Text(
               title,
               style: GoogleFonts.poppins(
@@ -156,8 +150,6 @@ class StatisticPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-
-            // Progress Bar
             Container(
               height: 20,
               decoration: BoxDecoration(
@@ -166,7 +158,6 @@ class StatisticPage extends StatelessWidget {
               ),
               child: Stack(
                 children: [
-                  // Bagian terisi
                   FractionallySizedBox(
                     alignment: Alignment.centerLeft,
                     widthFactor: percent / 100,
@@ -177,8 +168,6 @@ class StatisticPage extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  // Persentase di tengah
                   Center(
                     child: Text(
                       "${percent.toStringAsFixed(1)}%",
@@ -216,38 +205,23 @@ class StatisticPage extends StatelessWidget {
     );
   }
 
-  // Fungsi warna dinamis
   static Color _getColor(double percent) {
-    if (percent <= 20) {
-      return Colors.lightBlueAccent;
-    } else if (percent <= 40) {
-      return Colors.blue;
-    } else if (percent <= 60) {
-      return Colors.green;
-    } else if (percent <= 80) {
-      return Colors.orange;
-    } else {
-      return Colors.red;
-    }
+    if (percent <= 20) return Colors.lightBlueAccent;
+    if (percent <= 40) return Colors.blue;
+    if (percent <= 60) return Colors.green;
+    if (percent <= 80) return Colors.orange;
+    return Colors.red;
   }
 
-  // Fungsi Text dinamis
   static String _getvalue(double percent) {
-    if (percent <= 20) {
-      return "Sangat Rendah";
-    } else if (percent <= 40) {
-      return "Rendah";
-    } else if (percent <= 60) {
-      return "Stabil";
-    } else if (percent <= 80) {
-      return "Tinggi";
-    } else {
-      return "Sangat Tinggi";
-    }
+    if (percent <= 20) return "Sangat Rendah";
+    if (percent <= 40) return "Rendah";
+    if (percent <= 60) return "Stabil";
+    if (percent <= 80) return "Tinggi";
+    return "Sangat Tinggi";
   }
 }
 
-// ✅ Data model untuk chart
 class _ChartData {
   final String label;
   final double value;

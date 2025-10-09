@@ -5,19 +5,29 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // 🔒 Cegah duplikasi Firebase App
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      name: "trashbin",
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else {
+    Firebase.app();
+  }
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Trashify',
       theme: ThemeData(primaryColor: Colors.green),
+      debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
     );
   }
